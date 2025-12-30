@@ -1,0 +1,25 @@
+{
+   "manifest_version": 3,
+   "name": "Maps buttons",
+   "version": "1.6.0",
+   "description": "Vrací tlačítko Mapy a přidává Mapy.cz. Externí ikony.",
+   "permissions": [ "activeTab", "storage" ],
+   "action": {
+      "default_popup": "popup.html"
+   },
+   "icons": {
+      "48": "images/icon48.png", 
+      "128": "images/icon128.png"
+   },
+   "content_scripts": [ {
+      "js": [ "src/addMapsBtn.js" ],
+      "matches": [ "https://www.google.com/search*", "https://www.google.cz/search*" ]
+   } ],
+   
+   "web_accessible_resources": [
+      {
+         "resources": [ "images/*.svg", "images/*.png" ],
+         "matches": [ "https://www.google.com/*", "https://www.google.cz/*" ]
+      }
+   ]
+}

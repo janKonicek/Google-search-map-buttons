@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: "Segoe UI", Tahoma, sans-serif; width: 320px; padding: 15px; color: #333; margin: 0; }
+        h2 { font-size: 16px; margin: 0 0 15px 0; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        
+        .service-group { margin-bottom: 8px; background: #f8f9fa; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
+        
+        .service-info { display: flex; align-items: center; }
+        .service-icon { width: 20px; height: 20px; margin-right: 10px; object-fit: contain; }
+        .service-name { font-weight: 600; font-size: 13px; }
+        
+        .checks { display: flex; gap: 10px; }
+        .checks label { font-size: 11px; color: #555; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        input[type="checkbox"] { accent-color: #1a73e8; cursor: pointer; margin-bottom: 2px; }
+
+        .section-title { font-size: 13px; font-weight: bold; margin: 15px 0 8px 0; border-top: 1px solid #eee; padding-top: 10px; }
+        
+        /* Styl pro výběr vzhledu */
+        .appearance-options { display: flex; gap: 15px; }
+        .radio-label { font-size: 12px; display: flex; align-items: center; cursor: pointer; }
+        .radio-label input { margin-right: 5px; }
+
+        /* Styl pro výběr hlavního prokliku */
+        .provider-select { width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #ddd; margin-top: 5px; }
+        
+        #save-status { text-align: center; color: green; font-size: 12px; font-weight: bold; margin-top: 10px; opacity: 0; transition: opacity 0.3s; }
+    </style>
+</head>
+<body>
+    <h2>Nastavení Map</h2>
+
+    <div class="service-group">
+        <div class="service-info">
+            <img src="images/google-icon.svg" class="service-icon"> <span class="service-name">Google</span>
+        </div>
+        <div class="checks">
+            <label><input type="checkbox" id="googleTab">Lišta</label>
+            <label><input type="checkbox" id="googleShortcut">Mapa</label>
+        </div>
+    </div>
+
+    <div class="service-group">
+        <div class="service-info">
+            <img src="images/mapy-cz-icon.svg" class="service-icon"> <span class="service-name">Mapy.cz</span>
+        </div>
+        <div class="checks">
+            <label><input type="checkbox" id="mapyCzTab">Lišta</label>
+            <label><input type="checkbox" id="mapyCzShortcut">Mapa</label>
+        </div>
+    </div>
+
+    <div class="service-group">
+        <div class="service-info">
+            <img src="images/osm-icon.svg" class="service-icon"> <span class="service-name">OSM</span>
+        </div>
+        <div class="checks">
+            <label><input type="checkbox" id="osmTab">Lišta</label>
+            <label><input type="checkbox" id="osmShortcut">Mapa</label>
+        </div>
+    </div>
+
+    <div class="service-group">
+        <div class="service-info">
+            <img src="images/apple-maps-icon.svg" class="service-icon"> <span class="service-name">Apple</span>
+        </div>
+        <div class="checks">
+            <label><input type="checkbox" id="appleTab">Lišta</label>
+            <label><input type="checkbox" id="appleShortcut">Mapa</label>
+        </div>
+    </div>
+
+    <div class="section-title">Hlavní proklik náhledu (Velká mapa):</div>
+    <select id="primaryMap" class="provider-select">
+        <option value="google">Google Maps (Výchozí)</option>
+        <option value="mapy.cz">Mapy.cz</option>
+        <option value="osm">OpenStreetMap</option>
+        <option value="apple">Apple Maps</option>
+    </select>
+    <div style="font-size: 10px; color: #666; margin-top: 3px;">Určuje, kam vede kliknutí na obrázek mapy.</div>
+
+
+    <div class="section-title">Vzhled a chování</div>
+    <div class="appearance-options" style="flex-wrap: wrap; gap: 10px;">
+        <label class="radio-label"><input type="checkbox" id="showIcons"> Ikony</label>
+        <label class="radio-label"><input type="checkbox" id="showText"> Text</label>
+        <label class="radio-label" style="margin-left: auto;"><input type="checkbox" id="openNewTab"> Nová karta</label>
+    </div>
+
+    <div id="save-status">Uloženo!</div>
+    <script src="popup.js"></script>
+</body>
+</html>
