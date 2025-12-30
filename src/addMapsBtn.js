@@ -71,7 +71,7 @@ function updateMapsUrl() {
     if (searchQuery) {
         const enc = encodeURIComponent(searchQuery);
         mapsUrl = 'https://maps.google.com/maps?q=' + enc;
-        mapyCzUrl = 'https://mapy.cz/hledani?q=' + enc;
+        mapyCzUrl = 'https://mapy.com/hledani?q=' + enc;
         osmUrl = 'https://www.openstreetmap.org/search?query=' + enc;
         appleMapsUrl = 'https://maps.apple.com/?q=' + enc;
     }
@@ -136,7 +136,7 @@ function insertMapsButton(settings) {
     if (!referenceAnchor) return;
 
     insertTab(settings.googleTab, 'ext-maps-google-tab', 'Maps', mapsUrl, referenceAnchor, settings.openNewTab);
-    insertTab(settings.mapyCzTab, 'ext-maps-cz-tab', 'Mapy.cz', mapyCzUrl, referenceAnchor, settings.openNewTab);
+    insertTab(settings.mapyCzTab, 'ext-maps-cz-tab', 'Mapy.com', mapyCzUrl, referenceAnchor, settings.openNewTab);
     insertTab(settings.osmTab, 'ext-maps-osm-tab', 'OSM', osmUrl, referenceAnchor, settings.openNewTab);
     insertTab(settings.appleTab, 'ext-maps-apple-tab', 'Apple', appleMapsUrl, referenceAnchor, settings.openNewTab);
 }
@@ -150,7 +150,7 @@ function addMainMapBadge(provider, container) {
     if (provider === 'google') return;
 
     const providerData = {
-        'mapy.cz': { icon: mapyCzIconPath, name: 'Mapy.cz' },
+        'mapy.com': { icon: mapyCzIconPath, name: 'Mapy.com' },
         'osm': { icon: osmIconPath, name: 'OpenStreetMap' },
         'apple': { icon: appleIconPath, name: 'Apple Maps' }
     };
@@ -181,7 +181,7 @@ function setMapImageLink(settings) {
 
         if (parent.tagName === 'A') {
             let targetUrl = mapsUrl;
-            if (settings.primaryMap === 'mapy.cz') targetUrl = mapyCzUrl;
+            if (settings.primaryMap === 'mapy.com') targetUrl = mapyCzUrl;
             else if (settings.primaryMap === 'osm') targetUrl = osmUrl;
             else if (settings.primaryMap === 'apple') targetUrl = appleMapsUrl;
 
@@ -267,7 +267,7 @@ function addMapsShortcut(settings) {
             const displaySettings = { showIcons: settings.showIcons, showText: settings.showText };
 
             currentTop += createShortcutBtn('google-maps', mapsUrl, googleIconPath, 'Google Maps', currentTop, {enabled: settings.googleShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
-            currentTop += createShortcutBtn('mapy-cz', mapyCzUrl, mapyCzIconPath, 'Mapy.cz', currentTop, {enabled: settings.mapyCzShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
+            currentTop += createShortcutBtn('mapy-cz', mapyCzUrl, mapyCzIconPath, 'Mapy.com', currentTop, {enabled: settings.mapyCzShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
             currentTop += createShortcutBtn('osm', osmUrl, osmIconPath, 'OpenStreetMap', currentTop, {enabled: settings.osmShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
             currentTop += createShortcutBtn('apple', appleMapsUrl, appleIconPath, 'Apple Maps', currentTop, {enabled: settings.appleShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
         }

@@ -1,8 +1,8 @@
 {
    "manifest_version": 3,
    "name": "Map buttons",
-   "version": "2.1.0",
-   "description": "Restores the Maps button in Google Search and adds Mapy.cz, OSM, and Apple Maps integration.",
+   "version": "2.2.0",
+   "description": "Restores the Maps button in Google Search and adds Mapy.com, OSM, and Apple Maps integration.",
    "permissions": [ "activeTab", "storage" ],
    "action": {
       "default_popup": "popup.html",
