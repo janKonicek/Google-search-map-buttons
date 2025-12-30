@@ -3,52 +3,54 @@ let mapyCzUrl = '';
 let osmUrl = '';
 let appleMapsUrl = '';
 
+// --- IMAGE PATHS (Must match file names in 'images' folder) ---
 const googleIconPath = 'images/google-icon.svg'; 
 const mapyCzIconPath = 'images/mapy-cz-icon.svg';
 const osmIconPath = 'images/osm-icon.svg';
 const appleIconPath = 'images/apple-maps-icon.svg';
 
+/**
+ * Injects CSS styles into the page header.
+ */
 function injectStyles() {
     if (document.getElementById('maps-extension-styles')) return;
 
     const style = document.createElement('style');
     style.id = 'maps-extension-styles';
     style.textContent = `
-        /* Tlačítka (Shortcuts) */
+        /* Main Button Styles */
         .maps-ext-btn {
-            position: absolute; z-index: 20; cursor: pointer;
-            text-decoration: none !important;
+            position: absolute; z-index: 20; cursor: pointer; text-decoration: none !important;
             box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
             transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
             background-color: white; display: flex; align-items: center; justify-content: center;
-            box-sizing: border-box; color: #3c4043 !important;
+            box-sizing: border-box; color: #3c4043 !important; 
             font-family: 'Google Sans', Roboto, Arial, sans-serif;
             font-size: 14px; font-weight: 500;
         }
+        
+        .maps-ext-btn:visited { color: #3c4043 !important; }
+        
         .maps-ext-btn:hover {
             box-shadow: 0 4px 8px rgba(0,0,0,0.2); background-color: #f8f9fa; z-index: 25;
             transform: scale(1.05); color: #202124 !important;
         }
+
+        /* Mode: Round (Icon only) */
         .maps-ext-btn.round-mode { left: 8px; width: 40px; height: 40px; border-radius: 50%; }
         .maps-ext-btn.round-mode img { width: 24px; height: 24px; pointer-events: none; }
+
+        /* Mode: Pill (Text + Optional Icon) */
         .maps-ext-btn.pill-mode { left: 8px; height: 36px; padding: 0 16px; border-radius: 18px; border: 1px solid #dadce0; }
         .maps-ext-btn.pill-mode.has-icon { padding-left: 10px; }
         .maps-ext-btn.pill-mode img { width: 18px; height: 18px; margin-right: 8px; pointer-events: none; }
-
-        /* --- STYL PRO BADGE (Štítek na hlavní mapě) --- */
+        
+        /* Badge style for the main map image */
         .maps-provider-badge {
-            position: absolute;
-            bottom: 8px; right: 8px; /* Vpravo dole */
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 11px;
-            color: #444;
-            display: flex; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            z-index: 10;
-            pointer-events: none; /* Aby neblokoval klik */
-            backdrop-filter: blur(2px);
+            position: absolute; bottom: 8px; right: 8px; background: rgba(255, 255, 255, 0.95);
+            border-radius: 4px; padding: 4px 8px; font-size: 11px; color: #444;
+            display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            z-index: 10; pointer-events: none; backdrop-filter: blur(2px);
         }
         .maps-provider-badge img { width: 14px; height: 14px; margin-right: 6px; }
         .maps-provider-badge span { font-weight: 600; }
@@ -104,7 +106,7 @@ function insertTab(settingsKey, id, text, url, referenceAnchor, openNewTab) {
     
     const newTab = createCleanTab(referenceAnchor, text, url, id, openNewTab);
     let insertAfter = referenceAnchor;
-    // Jednoduché řazení
+    
     const ids = ['ext-maps-google-tab', 'ext-maps-cz-tab', 'ext-maps-osm-tab', 'ext-maps-apple-tab'];
     const myIndex = ids.indexOf(id);
     for (let i = myIndex - 1; i >= 0; i--) {
@@ -118,6 +120,7 @@ function insertTab(settingsKey, id, text, url, referenceAnchor, openNewTab) {
 function insertMapsButton(settings) {
     if (!mapsUrl) return;
     let referenceAnchor;
+    
     const newStructureContainer = document.querySelector('div.rQTE8b div.beZ0tf.O1uzAe');
     if (newStructureContainer) {
         const listItems = newStructureContainer.querySelectorAll('div[role="listitem"]');
@@ -138,17 +141,14 @@ function insertMapsButton(settings) {
     insertTab(settings.appleTab, 'ext-maps-apple-tab', 'Apple', appleMapsUrl, referenceAnchor, settings.openNewTab);
 }
 
-// --- HLAVNÍ MAPA (NÁHLED) LOGIKA ---
+// --- MAIN MAP PREVIEW LOGIC ---
 
 function addMainMapBadge(provider, container) {
-    // Odstranit starý badge
     const oldBadge = container.querySelector('.maps-provider-badge');
     if (oldBadge) oldBadge.remove();
-
-    // Pokud je provider Google, badge nepotřebujeme (je to default vzhled)
+    
     if (provider === 'google') return;
 
-    // Data pro providera
     const providerData = {
         'mapy.cz': { icon: mapyCzIconPath, name: 'Mapy.cz' },
         'osm': { icon: osmIconPath, name: 'OpenStreetMap' },
@@ -164,7 +164,7 @@ function addMainMapBadge(provider, container) {
     img.src = chrome.runtime.getURL(data.icon);
     
     const text = document.createElement('span');
-    text.textContent = "Otevřít na " + data.name;
+    text.textContent = "Open in " + data.name;
 
     badge.appendChild(img);
     badge.appendChild(text);
@@ -177,12 +177,10 @@ function setMapImageLink(settings) {
     
     if (luMapElement) {
         const parent = luMapElement.parentNode;
-        // Najdeme obal pro mapu (pro vložení badge)
         const container = luMapElement.closest('.SodP3b') || parent;
 
         if (parent.tagName === 'A') {
-            // Určení URL podle nastavení
-            let targetUrl = mapsUrl; // Default
+            let targetUrl = mapsUrl;
             if (settings.primaryMap === 'mapy.cz') targetUrl = mapyCzUrl;
             else if (settings.primaryMap === 'osm') targetUrl = osmUrl;
             else if (settings.primaryMap === 'apple') targetUrl = appleMapsUrl;
@@ -190,7 +188,6 @@ function setMapImageLink(settings) {
             parent.href = targetUrl;
             setTarget(parent, settings.openNewTab);
             
-            // Přidáme štítek, aby uživatel viděl, kam to vede
             if (container) addMainMapBadge(settings.primaryMap, container);
         }
     }
@@ -203,15 +200,15 @@ function createIconImage(path, alt) {
     return img;
 }
 
-function createShortcutBtn(id, url, iconPath, text, topPos, settings, openNewTab) {
-    const sodP3bElement = document.querySelector('.SodP3b');
-    if (!sodP3bElement) return 0;
+function createShortcutBtn(id, url, iconPath, text, topPos, settings, openNewTab, container) {
+    // Note: 'container' argument added to support flexible selectors
+    const existing = container.querySelector(`a[data-type="${id}"]`);
     
-    const existing = sodP3bElement.querySelector(`a[data-type="${id}"]`);
     if (!settings.enabled || (!settings.showIcons && !settings.showText)) {
         if (existing) existing.remove();
         return 0;
     }
+
     const mode = settings.showText ? 'pill-mode' : 'round-mode';
     const hasIconClass = (settings.showIcons && settings.showText) ? 'has-icon' : '';
     const heightStep = (mode === 'round-mode') ? 48 : 42;
@@ -220,12 +217,12 @@ function createShortcutBtn(id, url, iconPath, text, topPos, settings, openNewTab
     if (!btn) {
         btn = document.createElement('a');
         btn.setAttribute('data-type', id);
-        sodP3bElement.append(btn);
+        container.append(btn);
     }
     btn.href = url; setTarget(btn, openNewTab);
     btn.className = `maps-ext-btn ${mode} ${hasIconClass}`;
     btn.style.top = topPos + 'px';
-    btn.innerHTML = ''; btn.title = "Otevřít v " + text;
+    btn.innerHTML = ''; btn.title = "Open in " + text;
 
     if (settings.showIcons) btn.appendChild(createIconImage(iconPath, text));
     if (settings.showText) {
@@ -234,20 +231,45 @@ function createShortcutBtn(id, url, iconPath, text, topPos, settings, openNewTab
     return heightStep;
 }
 
+/**
+ * Manages the floating shortcut buttons.
+ * Updated to support .dirs and .o8ebK selectors.
+ */
 function addMapsShortcut(settings) {
     if (!mapsUrl) return;
-    const sodP3bElement = document.querySelector('.SodP3b');
-    if (sodP3bElement) {
-        const isMap = sodP3bElement.querySelector('div.SBzq0c.ZGYHDd') || sodP3bElement.querySelector('div.zMVLkf.jdQ9hc');
+    
+    // Look for map container using multiple selectors as requested
+    // .SodP3b = Standard Knowledge Panel Map
+    // .dirs = Directions button container (often found in other layouts)
+    // .o8ebK = Another map container variant
+    const mapContainer = document.querySelector('.SodP3b') || 
+                         document.querySelector('.dirs') || 
+                         document.querySelector('.o8ebK');
+    
+    if (mapContainer) {
+        // Optional: Check if it really contains a map-like structure
+        // We are lenient here because .dirs usually implies a location context
+        const isMap = mapContainer.querySelector('div.SBzq0c.ZGYHDd') || 
+                      mapContainer.querySelector('div.zMVLkf.jdQ9hc') ||
+                      mapContainer.className.includes('dirs') || // Trust .dirs if present
+                      mapContainer.className.includes('o8ebK');
+
         if (isMap) {
             injectStyles();
             let currentTop = 8;
+            
+            // Adjust start position if we are in .dirs (usually smaller/compact)
+            if (mapContainer.className.includes('dirs')) {
+                // You might want to adjust this if buttons overlap with existing content
+                // For now, keeping it same as .SodP3b
+            }
+
             const displaySettings = { showIcons: settings.showIcons, showText: settings.showText };
 
-            currentTop += createShortcutBtn('google-maps', mapsUrl, googleIconPath, 'Google Maps', currentTop, {enabled: settings.googleShortcut, ...displaySettings}, settings.openNewTab);
-            currentTop += createShortcutBtn('mapy-cz', mapyCzUrl, mapyCzIconPath, 'Mapy.cz', currentTop, {enabled: settings.mapyCzShortcut, ...displaySettings}, settings.openNewTab);
-            currentTop += createShortcutBtn('osm', osmUrl, osmIconPath, 'OpenStreetMap', currentTop, {enabled: settings.osmShortcut, ...displaySettings}, settings.openNewTab);
-            currentTop += createShortcutBtn('apple', appleMapsUrl, appleIconPath, 'Apple Maps', currentTop, {enabled: settings.appleShortcut, ...displaySettings}, settings.openNewTab);
+            currentTop += createShortcutBtn('google-maps', mapsUrl, googleIconPath, 'Google Maps', currentTop, {enabled: settings.googleShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
+            currentTop += createShortcutBtn('mapy-cz', mapyCzUrl, mapyCzIconPath, 'Mapy.cz', currentTop, {enabled: settings.mapyCzShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
+            currentTop += createShortcutBtn('osm', osmUrl, osmIconPath, 'OpenStreetMap', currentTop, {enabled: settings.osmShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
+            currentTop += createShortcutBtn('apple', appleMapsUrl, appleIconPath, 'Apple Maps', currentTop, {enabled: settings.appleShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
         }
     }
 }

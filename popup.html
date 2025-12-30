@@ -4,92 +4,82 @@
     <meta charset="UTF-8">
     <style>
         body { font-family: "Segoe UI", Tahoma, sans-serif; width: 320px; padding: 15px; color: #333; margin: 0; }
-        h2 { font-size: 16px; margin: 0 0 15px 0; border-bottom: 1px solid #eee; padding-bottom: 8px; }
         
+        /* Header & Language Switch */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        h2 { font-size: 16px; margin: 0; }
+        .lang-switch { display: flex; gap: 5px; }
+        .lang-btn { cursor: pointer; border: 1px solid #ddd; background: #fff; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-weight: bold; }
+        .lang-btn.active { background: #e8f0fe; border-color: #1a73e8; color: #1a73e8; }
+
+        /* Service Groups */
         .service-group { margin-bottom: 8px; background: #f8f9fa; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; }
-        
         .service-info { display: flex; align-items: center; }
         .service-icon { width: 20px; height: 20px; margin-right: 10px; object-fit: contain; }
         .service-name { font-weight: 600; font-size: 13px; }
         
+        /* Checkboxes */
         .checks { display: flex; gap: 10px; }
         .checks label { font-size: 11px; color: #555; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-        input[type="checkbox"] { accent-color: #1a73e8; cursor: pointer; margin-bottom: 2px; }
+        input[type="checkbox"] { accent-color: #1a73e8; margin-bottom: 2px; cursor: pointer; }
 
+        /* Section Titles & Inputs */
         .section-title { font-size: 13px; font-weight: bold; margin: 15px 0 8px 0; border-top: 1px solid #eee; padding-top: 10px; }
+        .provider-select { width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #ddd; margin-top: 5px; cursor: pointer; }
         
-        /* Styl pro výběr vzhledu */
-        .appearance-options { display: flex; gap: 15px; }
+        .hint { font-size: 10px; color: #666; margin-top: 3px; }
+        
+        /* Appearance row */
+        .appearance-row { display: flex; gap: 15px; flex-wrap: wrap; }
         .radio-label { font-size: 12px; display: flex; align-items: center; cursor: pointer; }
         .radio-label input { margin-right: 5px; }
 
-        /* Styl pro výběr hlavního prokliku */
-        .provider-select { width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #ddd; margin-top: 5px; }
-        
         #save-status { text-align: center; color: green; font-size: 12px; font-weight: bold; margin-top: 10px; opacity: 0; transition: opacity 0.3s; }
     </style>
 </head>
 <body>
-    <h2>Nastavení Map</h2>
-
-    <div class="service-group">
-        <div class="service-info">
-            <img src="images/google-icon.svg" class="service-icon"> <span class="service-name">Google</span>
-        </div>
-        <div class="checks">
-            <label><input type="checkbox" id="googleTab">Lišta</label>
-            <label><input type="checkbox" id="googleShortcut">Mapa</label>
+    <div class="header">
+        <h2 data-i18n="title">Map Settings</h2>
+        <div class="lang-switch">
+            <button class="lang-btn" id="lang-en">EN</button>
+            <button class="lang-btn" id="lang-cs">CS</button>
         </div>
     </div>
 
     <div class="service-group">
-        <div class="service-info">
-            <img src="images/mapy-cz-icon.svg" class="service-icon"> <span class="service-name">Mapy.cz</span>
-        </div>
-        <div class="checks">
-            <label><input type="checkbox" id="mapyCzTab">Lišta</label>
-            <label><input type="checkbox" id="mapyCzShortcut">Mapa</label>
-        </div>
+        <div class="service-info"><img src="images/google-icon.svg" class="service-icon"><span class="service-name">Google</span></div>
+        <div class="checks"><label><input type="checkbox" id="googleTab"><span data-i18n="tab">Tab</span></label><label><input type="checkbox" id="googleShortcut"><span data-i18n="map">Map</span></label></div>
     </div>
-
     <div class="service-group">
-        <div class="service-info">
-            <img src="images/osm-icon.svg" class="service-icon"> <span class="service-name">OSM</span>
-        </div>
-        <div class="checks">
-            <label><input type="checkbox" id="osmTab">Lišta</label>
-            <label><input type="checkbox" id="osmShortcut">Mapa</label>
-        </div>
+        <div class="service-info"><img src="images/mapy-cz-icon.svg" class="service-icon"><span class="service-name">Mapy.cz</span></div>
+        <div class="checks"><label><input type="checkbox" id="mapyCzTab"><span data-i18n="tab">Tab</span></label><label><input type="checkbox" id="mapyCzShortcut"><span data-i18n="map">Map</span></label></div>
     </div>
-
     <div class="service-group">
-        <div class="service-info">
-            <img src="images/apple-maps-icon.svg" class="service-icon"> <span class="service-name">Apple</span>
-        </div>
-        <div class="checks">
-            <label><input type="checkbox" id="appleTab">Lišta</label>
-            <label><input type="checkbox" id="appleShortcut">Mapa</label>
-        </div>
+        <div class="service-info"><img src="images/osm-icon.svg" class="service-icon"><span class="service-name">OSM</span></div>
+        <div class="checks"><label><input type="checkbox" id="osmTab"><span data-i18n="tab">Tab</span></label><label><input type="checkbox" id="osmShortcut"><span data-i18n="map">Map</span></label></div>
+    </div>
+    <div class="service-group">
+        <div class="service-info"><img src="images/apple-maps-icon.svg" class="service-icon"><span class="service-name">Apple</span></div>
+        <div class="checks"><label><input type="checkbox" id="appleTab"><span data-i18n="tab">Tab</span></label><label><input type="checkbox" id="appleShortcut"><span data-i18n="map">Map</span></label></div>
     </div>
 
-    <div class="section-title">Hlavní proklik náhledu (Velká mapa):</div>
+    <div class="section-title" data-i18n="primaryClickTitle">Main Map Preview Click:</div>
     <select id="primaryMap" class="provider-select">
-        <option value="google">Google Maps (Výchozí)</option>
+        <option value="google">Google Maps</option>
         <option value="mapy.cz">Mapy.cz</option>
         <option value="osm">OpenStreetMap</option>
         <option value="apple">Apple Maps</option>
     </select>
-    <div style="font-size: 10px; color: #666; margin-top: 3px;">Určuje, kam vede kliknutí na obrázek mapy.</div>
+    <div class="hint" data-i18n="primaryClickHint">Defines where clicking the map image takes you.</div>
 
-
-    <div class="section-title">Vzhled a chování</div>
-    <div class="appearance-options" style="flex-wrap: wrap; gap: 10px;">
-        <label class="radio-label"><input type="checkbox" id="showIcons"> Ikony</label>
-        <label class="radio-label"><input type="checkbox" id="showText"> Text</label>
-        <label class="radio-label" style="margin-left: auto;"><input type="checkbox" id="openNewTab"> Nová karta</label>
+    <div class="section-title" data-i18n="appearanceTitle">Appearance & Behavior</div>
+    <div class="appearance-row">
+        <label class="radio-label"><input type="checkbox" id="showIcons"> <span data-i18n="icons">Icons</span></label>
+        <label class="radio-label"><input type="checkbox" id="showText"> <span data-i18n="text">Text</span></label>
+        <label class="radio-label" style="margin-left: auto;"><input type="checkbox" id="openNewTab"> <span data-i18n="newTab">New Tab</span></label>
     </div>
 
-    <div id="save-status">Uloženo!</div>
+    <div id="save-status" data-i18n="saved">Saved!</div>
     <script src="popup.js"></script>
 </body>
 </html>
