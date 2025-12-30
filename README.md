@@ -44,7 +44,7 @@ You can fully customize the extension behavior. Click the extension icon in your
 ## Screenshots
 | Main Interface | Map Shortcuts | Settings |
 | :---: | :---: | :---: |
-| <a href="docs/mtEverest.jpg"><img src="docs/mtEverest.png" height="200"></a> | <a href="docs/ondrejnik.png"><img src="docs/ondrejnik.png" height="200"></a> | <a href="docs/settings.png"><img src="docs/settings.png"  height="200"></a> |
+| <a href="docs/mtEverest.png"><img src="docs/mtEverest.png" height="200"></a> | <a href="docs/ondrejnik.png"><img src="docs/ondrejnik.png" height="200"></a> | <a href="docs/settings.png"><img src="docs/settings.png"  height="200"></a> |
 | *Restored Tab & Buttons* | *Quick access inside Map* | *Fully Customizable* |
 
 ## License
