@@ -242,37 +242,80 @@ function addMapsShortcut(settings) {
     // .SodP3b = Standard Knowledge Panel Map
     // .dirs = Directions button container (often found in other layouts)
     // .o8ebK = Another map container variant
+    /*
     const mapContainer = document.querySelector('.SodP3b') || 
                          document.querySelector('.dirs') || 
                          document.querySelector('.o8ebK');
-    
-    if (mapContainer) {
-        // Optional: Check if it really contains a map-like structure
-        // We are lenient here because .dirs usually implies a location context
-        const isMap = mapContainer.querySelector('div.SBzq0c.ZGYHDd') || 
-                      mapContainer.querySelector('div.zMVLkf.jdQ9hc') ||
-                      mapContainer.className.includes('dirs') || // Trust .dirs if present
-                      mapContainer.className.includes('o8ebK');
+    */
+    const mapContainer = 
+        document.querySelector('.ZqGZZ') ||
+        document.querySelector('.yXg2De') ||
+        // Generic fallback: Knowledge panel local map wrapper
+        document.querySelector('div[data-attrid="kc:/location/location:map"]') ||
+        document.querySelector('div[data-hveid] a[href*="maps.google."]')?.closest('div');
+        
+    // If container not found or buttons already injected, bail out
+    if (!mapContainer || mapContainer.dataset.shortcutsInjected) {
+        return;
+    }
 
-        if (isMap) {
-            injectStyles();
-            let currentTop = 8;
-            
-            // Adjust start position if we are in .dirs (usually smaller/compact)
+    // Mark container as processed to avoid duplicates
+    mapContainer.dataset.shortcutsInjected = "true";
+
+    console.log('Map container found and ready:', mapContainer);
+   
+    // Optional: Check if it really contains a map-like structure
+    // We are lenient here because .dirs usually implies a location context
+    /*
+    const isMap = mapContainer.querySelector('div.SBzq0c.ZGYHDd') || 
+                    mapContainer.querySelector('div.zMVLkf.jdQ9hc') ||
+                    mapContainer.className.includes('dirs') || // Trust .dirs if present
+                    mapContainer.className.includes('o8ebK');
+    */
+
+    //if (isMap) {
+        injectStyles();
+        let currentTop = 8;
+        
+        /*
+        // Adjust start position if we are in .dirs (usually smaller/compact)
             if (mapContainer.className.includes('dirs')) {
                 // You might want to adjust this if buttons overlap with existing content
                 // For now, keeping it same as .SodP3b
             }
+        */
 
-            const displaySettings = { showIcons: settings.showIcons, showText: settings.showText };
+        const displaySettings = { showIcons: settings.showIcons, showText: settings.showText };
 
-            currentTop += createShortcutBtn('google-maps', mapsUrl, googleIconPath, 'Google Maps', currentTop, {enabled: settings.googleShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
-            currentTop += createShortcutBtn('mapy-cz', mapyCzUrl, mapyCzIconPath, 'Mapy.com', currentTop, {enabled: settings.mapyCzShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
-            currentTop += createShortcutBtn('osm', osmUrl, osmIconPath, 'OpenStreetMap', currentTop, {enabled: settings.osmShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
-            currentTop += createShortcutBtn('apple', appleMapsUrl, appleIconPath, 'Apple Maps', currentTop, {enabled: settings.appleShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
-        }
-    }
+        currentTop += createShortcutBtn('google-maps', mapsUrl, googleIconPath, 'Google Maps', currentTop, {enabled: settings.googleShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
+        currentTop += createShortcutBtn('mapy-cz', mapyCzUrl, mapyCzIconPath, 'Mapy.com', currentTop, {enabled: settings.mapyCzShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
+        currentTop += createShortcutBtn('osm', osmUrl, osmIconPath, 'OpenStreetMap', currentTop, {enabled: settings.osmShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
+        currentTop += createShortcutBtn('apple', appleMapsUrl, appleIconPath, 'Apple Maps', currentTop, {enabled: settings.appleShortcut, ...displaySettings}, settings.openNewTab, mapContainer);
+    //}
+
 }
+
+function initMapObserver(settings) {
+  // 1. Try immediately
+  addMapsShortcut(settings);
+
+  // 2. Observe DOM mutations (Google streams in results asynchronously)
+  const observer = new MutationObserver(() => {
+    addMapsShortcut(settings);
+  });
+
+  const target = document.getElementById('search') || 
+                 document.getElementById('rcnt') || 
+                 document.body;
+
+  if (target) {
+    observer.observe(target, {
+      childList: true,
+      subtree: true
+    });
+  }
+}
+
 
 function run() {
     chrome.storage.sync.get({
@@ -286,7 +329,7 @@ function run() {
         updateMapsUrl();
         insertMapsButton(settings);
         setMapImageLink(settings);
-        addMapsShortcut(settings);
+        initMapObserver(settings);
     });
 }
 
